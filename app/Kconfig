@@ -1,62 +1,8 @@
-menuconfig LED_SUBSYSTEM
-    bool "LED Subsystem"
-    default y
-    help
-      Enable the LED subsystem for this application.
-
-if LED_SUBSYSTEM
-
-choice BLINK_SLEEP_TIME
-    prompt "LED blink sleep time"
-    default BLINK_SLEEP_TIME_1000MS
-
-config BLINK_SLEEP_TIME_250MS
-    bool "250ms (fast)"
-
-config BLINK_SLEEP_TIME_1000MS
-    bool "1s (medium)"
-
-config BLINK_SLEEP_TIME_2000MS
-    bool "2s (slow)"
-
-endchoice
-
-config BLINK_SLEEP_TIME_MS
-    int
-    default 250 if BLINK_SLEEP_TIME_250MS
-    default 1000 if BLINK_SLEEP_TIME_1000MS
-    default 2000 if BLINK_SLEEP_TIME_2000MS
-    default 1000
-
-menuconfig LED_ADVANCED_SETTINGS
-    bool "Advanced LED settings"
-    default n
-
-if LED_ADVANCED_SETTINGS
-
-config LED_BRIGHTNESS
-    int "LED brightness (0-100)"
-    range 0 100
-    default 100
-
-config LED_FADE_DURATION_MS
-    int "LED fade duration (ms)"
+config APP_HEARTBEAT_PERIOD_MS
+    int "Heartbeat LED period (ms)"
     default 500
-
-menu "Expert settings"
-
-config LED_DEBUG
-    bool "Enable LED debugging"
-    default n
-
-config LED_CUSTOM_BLINK_PATTERN
-    bool "Custom blink pattern"
-    default n
-
-endmenu
-
-endif # LED_ADVANCED_SETTINGS
-
-endif # LED_SUBSYSTEM
+    range 100 2000
+    help
+      Sleep duration between heartbeat LED toggles, in milliseconds.
 
 source "Kconfig.zephyr"
