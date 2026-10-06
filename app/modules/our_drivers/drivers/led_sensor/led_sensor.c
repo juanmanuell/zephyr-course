@@ -7,6 +7,8 @@
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 
+#include <our_drivers/led_sensor.h>
+
 #define DT_DRV_COMPAT our_led_sensor
 
 LOG_MODULE_REGISTER(led_sensor, CONFIG_SENSOR_LOG_LEVEL);
@@ -17,6 +19,7 @@ struct led_sensor_config {
 
 struct led_sensor_data {
 	int32_t led_on; /* LED state captured by the last sample fetch */
+	bool keep_on;   /* when set, channel_get leaves the LED on */
 };
 
 static int led_sensor_sample_fetch(const struct device *dev,
@@ -57,6 +60,10 @@ static int led_sensor_channel_get(const struct device *dev,
 	val->val1 = data->led_on;
 	val->val2 = 0;
 
+	if (data->keep_on) {
+		return 0;
+	}
+
 	ret = gpio_pin_set_dt(&cfg->led, 0);
 	if (ret < 0) {
 		return ret;
@@ -64,6 +71,21 @@ static int led_sensor_channel_get(const struct device *dev,
 
 	data->led_on = 0;
 	LOG_DBG("LED off");
+
+	return 0;
+}
+
+int led_sensor_set_keep_on(const struct device *dev, bool keep_on)
+{
+	struct led_sensor_data *data;
+
+	if (dev == NULL) {
+		return -EINVAL;
+	}
+
+	data = dev->data;
+	data->keep_on = keep_on;
+	LOG_DBG("keep_on = %d", keep_on);
 
 	return 0;
 }

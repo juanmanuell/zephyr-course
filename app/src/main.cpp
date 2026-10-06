@@ -3,6 +3,8 @@
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 
+#include <our_drivers/led_sensor.h>
+
 /* The devicetree node identifier for the "app-led" alias. */
 #define LED_NODE DT_ALIAS(app_led)
 
@@ -13,6 +15,7 @@ LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 int main(void)
 {
     bool led_state = true;
+    bool keep_on = false;
     struct sensor_value val;
     const struct device *led_sensor = DEVICE_DT_GET_ANY(our_led_sensor);
 
@@ -30,6 +33,13 @@ int main(void)
 
         led_state = !led_state;
         LOG_INF("LED state: %s", led_state ? "ON" : "OFF");
+
+        /* Extension API: alternate whether the channel read keeps the LED on. */
+        keep_on = !keep_on;
+        if (led_sensor_set_keep_on(led_sensor, keep_on) < 0) {
+            LOG_ERR("led_sensor_set_keep_on failed");
+        }
+        LOG_INF("Sensor keep_on: %s", keep_on ? "yes" : "no");
 
         /* The fetch turns the sensor LED on, the channel read turns it off. */
         if (sensor_sample_fetch(led_sensor) < 0) {
