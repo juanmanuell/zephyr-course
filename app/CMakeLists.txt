@@ -6,3 +6,4 @@ find_package(Zephyr REQUIRED)
 project(my_zephyr_app)
 
 target_sources(app PRIVATE src/main.cpp)
+target_sources_ifdef(CONFIG_SHELL app PRIVATE src/sensor_shell.c)
