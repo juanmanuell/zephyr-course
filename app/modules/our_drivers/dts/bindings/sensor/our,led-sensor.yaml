@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: Apache-2.0
+
+description: Simple sensor backed by an on-board LED
+
+compatible: "our,led-sensor"
+
+include: sensor-device.yaml
+
+properties:
+  gpios:
+    type: phandle-array
+    required: true
+    description: GPIO connected to the LED used by the sensor

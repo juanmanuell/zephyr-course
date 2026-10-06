@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: Apache-2.0
+
+config OUR_LED_SENSOR
+	bool "LED sensor driver"
+	default y
+	depends on DT_HAS_OUR_LED_SENSOR_ENABLED
+	depends on SENSOR
+	select GPIO
+	help
+	  Enable the sensor driver backed by an on-board LED. Fetching a
+	  sample turns the LED on and reading the channel turns it off.
