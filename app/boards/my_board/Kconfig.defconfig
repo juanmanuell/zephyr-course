@@ -1,0 +1,11 @@
+# My Board from Scratch configuration
+
+# Copyright (c) 2023 Thomas Stranger
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_MY_BOARD
+
+configdefault NET_L2_ETHERNET
+	default y
+
+endif # BOARD_MY_BOARD
